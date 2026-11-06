@@ -108,7 +108,6 @@ select{border:0;border-radius:7px;padding:6px 8px;background:var(--chip);color:v
    <div class="tg">Auto-Open Layout <div class="sw on" data-k="open"></div></div>
    <div class="tg">Auto-Print Mode <div class="sw on" data-k="print"></div></div>
    <div class="tg">Permission Mode <div class="sw" data-k="perm"></div></div>
-   <div class="tg">Shop Network Only <div class="sw" data-k="net"></div></div>
    <div class="tg last"><svg><use href="#i-hist"/></svg>Auto-Delete
     <select id="del"><option value="0">Never</option><option value="1">1 Minute</option><option value="5" selected>5 Minutes</option><option value="15">15 Minutes</option></select></div>
   </div>
@@ -159,8 +158,7 @@ var ICE={config:{iceServers:[
   {urls:["turn:eu-0.turn.peerjs.com:3478","turn:us-0.turn.peerjs.com:3478"],username:"peerjs",credential:"peerjsp"}
 ]}};
 var MAXMB=25, OK_EXT=["pdf","png","jpg","jpeg","webp","gif","txt"];
-var ALLOWED_IPS=["162.4.97.2"];
-var S={open:true,print:true,perm:false,net:false,on:true,del:5},J=[],walk={},peer=null,st="connecting",QC=null,retry=null;
+var S={open:true,print:true,perm:false,on:true,del:5},J=[],walk={},peer=null,st="connecting",QC=null,retry=null;
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function t(m){var e=$("toast");e.textContent=m;e.className="s";setTimeout(function(){e.className=""},2200)}
@@ -197,7 +195,6 @@ function recv(c,d){
   var buf=d.data,size=buf&&(buf.byteLength||buf.length||0);
   function no(m){try{c.send({id:d.id,status:"rejected",msg:m})}catch(e){}}
   if(!S.on)return no("The counter has paused the queue. Try again soon.");
-  if(S.net&&ALLOWED_IPS.indexOf(d.ip)<0)return no("Please connect to the shop Wi-Fi to send files.");
   if(OK_EXT.indexOf(ext)<0)return no("File type not accepted. Send "+OK_EXT.join(", ")+".");
   if(!size||size>MAXMB*1048576)return no("File is empty or over "+MAXMB+" MB.");
   var blob=new Blob([buf],{type:d.type||"application/octet-stream"});
